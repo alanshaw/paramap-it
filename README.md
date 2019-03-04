@@ -53,7 +53,7 @@ Returns a new async iterable that can be used to consume the `source` iterable, 
 
 * `source` (`async Iterable`) - `Iterable` or `AsyncIterable` to map data from
 * `mapper` (`async Function`) - Function that receives one parameter, the value to be mapped, and should return a `Promise` that resolves to the mapped value
-* `options.ordering` (`Boolean` default `true`) - set to `false` to discard ordering and yield values as soon as they are resolved (more performant)
+* `options.ordered` (`Boolean` default `true`) - set to `false` to discard ordering and yield values as soon as they are resolved (more performant)
 
 ## Contribute
 
