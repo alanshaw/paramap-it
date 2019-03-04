@@ -4,12 +4,12 @@
   "description": "Parallel mapping for async iterators",
   "main": "index.js",
   "dependencies": {
-    "ava": "^1.2.1",
-    "event-iterator": "^1.0.0",
-    "pull-stream": "^3.6.9"
+    "event-iterator": "^1.0.0"
   },
   "devDependencies": {
-    "pull-paramap": "^1.2.2"
+    "ava": "^1.2.1",
+    "pull-paramap": "^1.2.2",
+    "pull-stream": "^3.6.9"
   },
   "scripts": {
     "test": "ava --verbose",

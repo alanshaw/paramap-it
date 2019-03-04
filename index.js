@@ -2,7 +2,7 @@ const { EventIterator } = require('event-iterator')
 
 class MultiResolver {
   add (promise, id) {
-    promise
+    Promise.resolve(promise)
       .then(result => { if (this.onResolve) this.onResolve({ result, id }) })
       .catch(error => { if (this.onReject) this.onReject({ error, id }) })
     return this
@@ -87,13 +87,13 @@ class OrderedMultiResolver {
   }
 }
 
-module.exports = (iterable, mapper) => {
+module.exports = (source, mapper) => {
   return (async function * () {
     const resolver = new OrderedMultiResolver()
 
     async function consumer () {
       try {
-        for await (const item of iterable) {
+        for await (const item of source) {
           resolver.add(mapper(item))
         }
       } catch (err) {

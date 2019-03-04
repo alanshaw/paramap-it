@@ -2,18 +2,18 @@ import test from 'ava'
 import paramap from '.'
 
 test('should map a single item', async t => {
-  const iterable = (async function * () { yield 2 })()
+  const source = (async function * () { yield 2 })()
   const mapper = async (value) => value * 2
 
-  for await (const value of paramap(iterable, mapper)) {
+  for await (const value of paramap(source, mapper)) {
     t.is(value, 4)
   }
 })
 
-test('should map may items', async t => {
-  const iterable = (async function * () {
+test('should map many items', async t => {
+  const source = (async function * () {
     for (let i = 0; i < 100; i++) {
-      yield new Promise(resolve => setTimeout(() => resolve(i), 10))
+      yield new Promise(resolve => setTimeout(() => resolve(i), Math.random() * 10))
     }
   })()
   const mapper = async value => {
@@ -22,11 +22,28 @@ test('should map may items', async t => {
   }
 
   let i = 1
-  for await (const value of paramap(iterable, mapper)) {
+  for await (const value of paramap(source, mapper)) {
     // console.log(value)
     t.is(value, i)
     i++
   }
 
   t.is(i, 101)
+})
+
+test('should map with synchronous mapper', async t => {
+  const source = (async function * () {
+    for (let i = 0; i < 100; i++) {
+      yield new Promise(resolve => setTimeout(() => resolve(i), Math.random() * 10))
+    }
+  })()
+  const mapper = value => value + 1
+
+  let i = 0
+  for await (const value of paramap(source, mapper)) {
+    t.is(value, i + 1)
+    i++
+  }
+
+  t.is(i, 100)
 })
