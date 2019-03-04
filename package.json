@@ -1,0 +1,35 @@
+{
+  "name": "paramap-it",
+  "version": "0.0.0",
+  "description": "Parallel mapping for async iterators",
+  "main": "index.js",
+  "dependencies": {
+    "ava": "^1.2.1",
+    "event-iterator": "^1.0.0",
+    "pull-stream": "^3.6.9"
+  },
+  "devDependencies": {
+    "pull-paramap": "^1.2.2"
+  },
+  "scripts": {
+    "test": "ava --verbose",
+    "benchmark": "ava bench.js --verbose"
+  },
+  "keywords": [
+    "map",
+    "parallel",
+    "concurrent",
+    "iterator",
+    "async"
+  ],
+  "author": "Alan Shaw",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanshaw/paramap-it.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alanshaw/paramap-it/issues"
+  },
+  "homepage": "https://github.com/alanshaw/paramap-it#readme"
+}
