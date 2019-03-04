@@ -1,11 +1,12 @@
 import test from 'ava'
 import pull from 'pull-stream'
 import pullParamap from 'pull-paramap'
-import Stream, { Readable, Transform, Writable } from 'stream'
-import util from 'util'
+import Stream, { Readable, Writable } from 'stream'
+import paraTransform from 'parallel-transform'
+import { promisify } from 'util'
 import paramap from '.'
 
-const pipeline = util.promisify(Stream.pipeline)
+const pipeline = promisify(Stream.pipeline)
 
 ;[10, 100, 500, 1000].forEach(length => {
   test.serial(`Node.js stream ${length} items`, async t => {
@@ -28,13 +29,8 @@ const pipeline = util.promisify(Stream.pipeline)
           }, 10)
         }
       }),
-      new Transform({
-        objectMode: true,
-        transform (chunk, enc, cb) {
-          setTimeout(() => {
-            cb(null, chunk + 1)
-          }, 100)
-        }
+      paraTransform(length, (value, cb) => {
+        setTimeout(() => cb(null, value + 1), 100)
       }),
       new Writable({
         objectMode: true,
