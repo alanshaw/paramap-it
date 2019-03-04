@@ -47,3 +47,22 @@ test('should map with synchronous mapper', async t => {
 
   t.is(i, 100)
 })
+
+test('should not care about order', async t => {
+  const input = Array.from(Array(100), (_, i) => i)
+  const source = (async function * () {
+    for (let i = 0; i < input.length; i++) {
+      yield new Promise(resolve => setTimeout(() => resolve(input[i]), Math.random() * 10))
+    }
+  })()
+  const mapper = async value => {
+    return new Promise(resolve => setTimeout(() => resolve(value), Math.random() * 100))
+  }
+
+  const output = []
+  for await (const value of paramap(source, mapper, { ordered: false })) {
+    output.push(value)
+  }
+
+  t.notDeepEqual(output, input)
+})

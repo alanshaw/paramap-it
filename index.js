@@ -9,6 +9,66 @@ class MultiResolver {
   }
 }
 
+class UnorderedMultiResolver {
+  constructor () {
+    this._length = 0
+
+    this._onResolve = this._onResolve.bind(this)
+    this._onReject = this._onReject.bind(this)
+
+    const resolver = new MultiResolver()
+    resolver.onResolve = this._onResolve
+    resolver.onReject = this._onReject
+    this._resolver = resolver
+  }
+
+  _onResolve ({ result }) {
+    this._length--
+
+    // console.log('resolve', result)
+    if (this.onResolve) this.onResolve(result)
+
+    if (!this._length && this.onDrain) {
+      this.onDrain()
+    }
+  }
+
+  _onReject ({ error, id }) {
+    this.destroy()
+    if (this.onReject) this.onReject(error)
+  }
+
+  add (promise) {
+    this._length++
+    this._resolver.add(promise)
+    return this
+  }
+
+  // Number of promises left to resolve
+  get length () {
+    return this._length
+  }
+
+  error (err) {
+    this.destroy()
+    if (this.onError) this.onError(err)
+    return this
+  }
+
+  end () {
+    this.destroy()
+    if (this.onEnd) this.onEnd()
+    return this
+  }
+
+  destroy () {
+    this._resolver.onResolve = null
+    this._resolver.onReject = null
+    this._resolver = null
+    this._length = 0
+  }
+}
+
 class OrderedMultiResolver {
   constructor () {
     this._nextId = 0
@@ -46,7 +106,7 @@ class OrderedMultiResolver {
     }
 
     if (!this._promises.length && this.onDrain) {
-      this.onDrain(result)
+      this.onDrain()
     }
   }
 
@@ -87,9 +147,12 @@ class OrderedMultiResolver {
   }
 }
 
-module.exports = (source, mapper) => {
+function paramap (source, mapper, options) {
   return (async function * () {
-    const resolver = new OrderedMultiResolver()
+    options = options || {}
+    options.ordered = options.ordered == null ? true : options.ordered
+
+    const resolver = options.ordered ? new OrderedMultiResolver() : new UnorderedMultiResolver()
 
     async function consumer () {
       try {
@@ -129,3 +192,5 @@ module.exports = (source, mapper) => {
     for await (const item of ei) yield item
   })()
 }
+
+module.exports = paramap
