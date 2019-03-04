@@ -47,12 +47,13 @@ for await (const value of doubler) {
 const paramap = require('paramap-it')
 ```
 
-### `paramap(source, mapper)`
+### `paramap(source, mapper, [options])`
 
 Returns a new async iterable that can be used to consume the `source` iterable, applying the async `mapper` function to each item.
 
 * `source` (`async Iterable`) - `Iterable` or `AsyncIterable` to map data from
 * `mapper` (`async Function`) - Function that receives one parameter, the value to be mapped, and should return a `Promise` that resolves to the mapped value
+* `options.ordering` (`Boolean` default `true`) - set to `false` to discard ordering and yield values as soon as they are resolved (more performant)
 
 ## Contribute
 
