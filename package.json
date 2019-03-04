@@ -1,6 +1,6 @@
 {
   "name": "paramap-it",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Parallel mapping for async iterators",
   "main": "index.js",
   "dependencies": {
